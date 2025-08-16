@@ -2,8 +2,16 @@ import { Button, Container, Flex,HStack, Text } from "@chakra-ui/react"
 import { Link } from "react-router-dom";
 //import { PlusSquareIcon } from "@chakra-ui/icons"; // in new v3 version need to import from lucide react
 import { PlusSquare } from "lucide-react";
+import { useColorMode, ColorModeButton,useColorModeValue } from "../components/ui/color-mode"
+import { IoMoon } from "react-icons/io5";
+import { LuSun } from "react-icons/lu";
 
 const Navbar = () => {
+  const { colorMode, toggleColorMode } = useColorMode();
+
+  const bgColor = useColorModeValue("gray.200", "gray.700");
+  const hoverBg = useColorModeValue("gray.300", "gray.600");
+  const iconColor = useColorModeValue("black", "white");
   return (
     <Container maxW={"1140px"} px={4}>
         <Flex
@@ -35,10 +43,26 @@ const Navbar = () => {
 
         <HStack spacing={2} alignItems={"center"}>
             <Link to={"/create"}>
-            <Button>
+            <Button
+            bg={bgColor}
+            _hover={{ bg: hoverBg }}
+            color={iconColor}
+            //rounded="half"
+            p={2} 
+            >
                 <PlusSquare fontSize={20}/>
             </Button>
             </Link>
+            <Button 
+            onClick={toggleColorMode}
+            bg={bgColor}
+            _hover={{ bg: hoverBg }}
+            color={iconColor}
+            //rounded="half"
+            p={2}
+            >
+              {colorMode === "light" ? <IoMoon /> : <LuSun size="20" />}
+            </Button>
         </HStack>
         </Flex>
     </Container>
