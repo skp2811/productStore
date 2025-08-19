@@ -4,7 +4,9 @@ import CreatePage from "./pages/CreatePage";
 import HomePage from "./pages/HomePage";
 import Navbar from "./component/Navbar";
 import { useColorModeValue } from "./components/ui/color-mode";
+
 function App() {
+
   return (
     <Box minH={"100vh"} bg={useColorModeValue("gray.100","gray.900")}>
       <Navbar />

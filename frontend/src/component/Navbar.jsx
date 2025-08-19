@@ -12,6 +12,7 @@ const Navbar = () => {
   const bgColor = useColorModeValue("gray.200", "gray.700");
   const hoverBg = useColorModeValue("gray.300", "gray.600");
   const iconColor = useColorModeValue("black", "white");
+
   return (
     <Container maxW={"1140px"} px={4}>
         <Flex

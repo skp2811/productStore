@@ -8,6 +8,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useColorModeValue } from "../components/ui/color-mode"
+import { useProductStore } from '../store/product';
 
 const CreatePage = () => {
   const [newProduct, setNewProduct] = useState({
@@ -15,9 +16,14 @@ const CreatePage = () => {
     price: "",
     image: "",
   });
+  
+  const {createProduct}=useProductStore()
 
-  const handleAddProduct = () => {
-    console.log(newProduct);
+    const handleAddProduct = async() => {
+      const { success,message } = await createProduct(newProduct)
+      console.log("Success:", success);
+      console.log("Message:", message);
+      //console.log(newProduct);
   };
   
   // mt for top margin between container and navbar
