@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useColorModeValue } from "../components/ui/color-mode"
 import { useProductStore } from '../store/product';
+import { Toaster, toaster } from "../components/ui/toaster" // v3 version format
 
 const CreatePage = () => {
   const [newProduct, setNewProduct] = useState({
@@ -20,14 +21,32 @@ const CreatePage = () => {
   const {createProduct}=useProductStore()
 
     const handleAddProduct = async() => {
-      const { success,message } = await createProduct(newProduct)
-      console.log("Success:", success);
-      console.log("Message:", message);
+      const { success, message } = await createProduct(newProduct);
+      if(!success) {
+        toaster.create({
+          title: "Error",
+          description: message,
+          status: "error",
+          closable: true,
+        });
+      } else {
+        toaster.create({
+          title:"Success",
+          description: message,
+          status: "success",
+          closable: true
+        });
+      }
+      //console.log("Success:", success);
+      //console.log("Message:", message);
       //console.log(newProduct);
+      setNewProduct({ name: "", price: "", image: "" });
   };
   
   // mt for top margin between container and navbar
   return <Container maxW={"container.sm"} mt={12}>
+
+    <Toaster />
     <VStack
       spacing={8}
     >
