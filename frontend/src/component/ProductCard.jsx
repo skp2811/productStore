@@ -1,16 +1,17 @@
-import { Box, Heading, Image, Text, HStack, IconButton } from "@chakra-ui/react";
+import { Box, Heading, Image, Text, HStack, IconButton, Dialog, Input, VStack, Button, Portal } from "@chakra-ui/react";
 import { useColorModeValue } from "../components/ui/color-mode";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Toaster, toaster } from "../components/ui/toaster" // v3 version format
 import { useProductStore } from "../store/product";
+import { useState } from "react";
 
 const ProductCard = ({product}) => {
+    const [updatedProduct, setUpdatedProduct] = useState(product);
     const textColor = useColorModeValue("gray.600","gray.200");
     const bg=useColorModeValue("white","gray.800");
     
     // for delete product
-    const { deleteProduct } = useProductStore();
-
+    const { deleteProduct, updateProduct } = useProductStore();
     const handleDeleteProduct = async (pid) => {
         const { success, message } = await deleteProduct(pid);
               if(!success) {
@@ -29,7 +30,11 @@ const ProductCard = ({product}) => {
                 });
               }
     }
-    <Toaster />
+    
+    const handleUpdateProduct = async (pid, updatedProduct) => {
+        await updateProduct(pid, updatedProduct);
+        onclose();
+    }
     return (
        
         <Box
@@ -52,14 +57,55 @@ const ProductCard = ({product}) => {
             </Text>
 
             <HStack spacing={2}>
+
+          {/* Dialog Root replaces Modal in v3 version */}
+            <Dialog.Root>
+             <Dialog.Trigger asChild>
               <IconButton
                 aria-label="Edit"
-                //icon={<FaEdit color="white" size="18" />}   // set icon color directly
-                bg="blue.300"                               // button background
-                _hover={{ bg: "blue.600" }}                 // hover color
+                bg="blue.300"
+                _hover={{ bg: "blue.600" }}
               >
                 <FaEdit color="black" size="18" />
-              </IconButton>  
+              </IconButton>
+             </Dialog.Trigger>
+
+             <Portal>
+              <Dialog.Backdrop />
+              <Dialog.Positioner>
+                <Dialog.Content>
+                  <Dialog.CloseTrigger />
+                  <Dialog.Header>
+                    <Dialog.Title>Update Product</Dialog.Title>
+                  </Dialog.Header>
+
+                  <Dialog.Body>
+                    <VStack spacing={4}>
+                      <Input placeholder="Product Name" name="name" value={updatedProduct.name} 
+                        onChange={(e) => setUpdatedProduct({ ...updatedProduct, name: e.target.value })}
+                      />
+                      <Input placeholder="Price" name="price" type="number" value={updatedProduct.price} 
+                         onChange={(e) => setUpdatedProduct({ ...updatedProduct, price: e.target.value })}
+                      />
+                      <Input placeholder="Image URL" name="image" value={updatedProduct.image} 
+                         onChange={(e) => setUpdatedProduct({ ...updatedProduct, image: e.target.value })}
+                      />
+                    </VStack>
+                  </Dialog.Body>
+
+                  <Dialog.Footer>
+                    <Dialog.ActionTrigger asChild>
+                      <Button variant="outline" bg="gray.400">Cancel</Button>
+                    </Dialog.ActionTrigger>
+                    <Button bg="blue.400"
+                      onClick={() => handleUpdateProduct(product._id, updatedProduct)}
+                    >Update</Button>
+                  </Dialog.Footer>
+                </Dialog.Content>
+              </Dialog.Positioner>
+             </Portal>
+            </Dialog.Root> 
+              
                <Toaster />
               <IconButton 
                 aria-label="Delete" 
@@ -71,7 +117,8 @@ const ProductCard = ({product}) => {
               </IconButton>
               </HStack>
           </Box>
+
         </Box>
-    )
+    );
 };
 export default ProductCard;
